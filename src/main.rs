@@ -1,7 +1,6 @@
 mod ai;
 mod ai_panel;
 mod command;
-mod demo;
 mod doc;
 mod draw;
 mod editor;
@@ -53,7 +52,6 @@ struct Drag {
 enum Leave {
     Open,
     Create,
-    Example,
     Quit,
 }
 
@@ -591,7 +589,6 @@ impl App {
     fn perform(&mut self, ctx: &egui::Context, what: Leave) {
         match what {
             Leave::Create => self.install(Editor::new(self.new_size.0, self.new_size.1), None),
-            Leave::Example => self.install(demo::bouncing_ball(), None),
             Leave::Open => {
                 let Some(path) = rfd::FileDialog::new().set_title("Open a drawing").add_filter("Skribbl drawing", &["skb"]).pick_file() else { return };
                 match project::load(&path) {
@@ -940,9 +937,6 @@ impl App {
                     });
                     if pixel_button(&mut ui, "CREATE") {
                         self.request = Some(Leave::Create);
-                    }
-                    if ui.button("Try an example animation").clicked() {
-                        self.request = Some(Leave::Example);
                     }
                     if pixel_button(&mut ui, "BACK") {
                         self.screen = self.back;
